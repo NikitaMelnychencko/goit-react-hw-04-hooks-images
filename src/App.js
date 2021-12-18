@@ -1,47 +1,41 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import Section from 'components/Section/Section';
 import ImageGallery from 'components/ImageGallery/ImageGallery';
 import Searchbar from 'components/Searchbar/Searchbar';
 import Modal from 'components/Modal/Modal';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-class App extends Component {
-  state = {
-    searchName: '',
-    showModal: false,
-    option: {},
+const App = () => {
+  const [searchName, setSearchName] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [option, setOption] = useState({});
+
+  const handleFormSubmit = searchName => {
+    setSearchName(searchName);
+  };
+  const toggleModal = (src, alt) => {
+    setShowModal(!showModal);
+    setOption({ imageSrc: src, imageAlt: alt });
   };
 
-  handleFormSubmit = searchName => {
-    this.setState({ searchName });
-  };
-  toggleModal = (src, alt) => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-      option: { imageSrc: src, imageAlt: alt },
-    }));
-  };
-  render() {
-    const { option, searchName, showModal } = this.state;
-    return (
-      <>
-        <Section color={'#3f51b5'}>
-          <Searchbar onSubmit={this.handleFormSubmit} />
-        </Section>
-        <Section>
-          <ImageGallery searchName={searchName} onClick={this.toggleModal} />
-        </Section>
-        {showModal && (
-          <Modal
-            src={option.imageSrc}
-            alt={option.imageAlt}
-            onClose={this.toggleModal}
-          />
-        )}
-        <ToastContainer autoClose={4000} />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Section color={'#3f51b5'}>
+        <Searchbar onSubmit={handleFormSubmit} />
+      </Section>
+      <Section>
+        <ImageGallery searchName={searchName} onClick={toggleModal} />
+      </Section>
+      {showModal && (
+        <Modal
+          src={option.imageSrc}
+          alt={option.imageAlt}
+          onClose={toggleModal}
+        />
+      )}
+      <ToastContainer autoClose={4000} />
+    </>
+  );
+};
 export default App;
